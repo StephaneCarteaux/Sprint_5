@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionServiceProvider;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,6 +15,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::truncate();
-        User::factory(10)->create();
+        User::factory(9)->create();
+        User::factory(1)->admin()->create();
+
+        $this->call([
+            PermissionsSeeder::class,
+        ]);
     }
+
 }
