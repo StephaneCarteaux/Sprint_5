@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterController extends Controller
+class RegisteredUserController extends Controller
 {
-    public function __invoke(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -25,6 +25,6 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        //return response()->json(['token' => $user->createToken('API Token')->plainTextToken], 200);
+        return response()->json(['token' => $user->createToken('API Token')->plainTextToken], 200);
     }
 }
