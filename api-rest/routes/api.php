@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Api\V1\Auth\RegisteredUserController;
+use \App\Http\Controllers\Api\V1\Auth\RegisterController;
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('/players', [RegisteredUserController::class, 'store']);
+    Route::post('/players', [RegisterController::class, 'store']);
 });
 
 // Route::get('/user', function (Request $request) {
