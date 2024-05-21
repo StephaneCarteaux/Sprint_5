@@ -25,9 +25,11 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'nickname' => fake()->boolean() ? fake()->userName() : 'Anonim',
+            'registered_at' => now(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('123456'),
             'remember_token' => Str::random(10),
         ];
     }
@@ -40,5 +42,35 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Indicate that the user should have the default nickname "Anonim".
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function anonim()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'nickname' => 'Anonim',
+            ];
+        });
+    }
+
+    public function admin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'admin',
+                'nickname' => 'admin',
+                'registered_at' => now(),
+                'email' => 'admin@api-rest.com',
+                'email_verified_at' => now(),
+                'password' => static::$password ??= Hash::make('123456'),
+                'remember_token' => Str::random(10),
+
+            ];
+        });
     }
 }

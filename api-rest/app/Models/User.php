@@ -20,6 +20,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nickname',
+        'registered_at',
         'email',
         'password',
     ];
@@ -43,7 +45,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed', // This conversion maybe is not needed as it is already hashed by the controller
         ];
     }
 }
