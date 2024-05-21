@@ -25,7 +25,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'nickname' => fake()->boolean() ? fake()->userName() : 'Anonim',
+            'nickname' => fake()->boolean(50) ? fake()->userName() : 'Anonim',
             'registered_at' => now(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
