@@ -38,15 +38,23 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'nickname' => 'nullable|string|max:255|unique:users',
+            'nickname' => 'nullable|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
+        // Assign nickname if not provided
+        $nickname = $request->input('nickname') ?? 'Anonim';
+
+        // If nickname is not unique, return error
+        if ($nickname !== 'Anonim' && User::where('nickname', $nickname)->exists()) {
+            return response()->json(['error' => 'The nickname has already been taken'], 400);
+        }
+
         // Create new user if nickname is unique
         $user = User::create([
             'name' => $request->name,
-            'nickname' => $request->nickname ?? 'Anonim', // If nickname is not provided, use 'Anonim'
+            'nickname' => $nickname,
             'registered_at' => now(),
             'email' => $request->email,
             'password' => Hash::make($request->password),
