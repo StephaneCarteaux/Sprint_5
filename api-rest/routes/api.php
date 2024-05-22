@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 Route::group(['prefix' => 'v1'], function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/players', [AuthController::class, 'store']);
-    Route::post('players/{id}/games', [GameController::class, 'throw'])->middleware('auth:api');
+    Route::post('players/{id}/games', [GameController::class, 'play'])->middleware('auth:api');
 });
 
 // Route::get('/user', function (Request $request) {
