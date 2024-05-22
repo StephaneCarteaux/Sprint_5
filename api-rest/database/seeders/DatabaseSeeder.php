@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             PermissionsSeeder::class,
         ]);
         
-        User::truncate();
+        //User::truncate();
         User::factory(9)->create()
             ->each(function ($user) {
                 $user->assignRole('player');
