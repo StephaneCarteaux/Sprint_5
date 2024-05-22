@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -37,14 +38,27 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'nickname' => 'required|string|max:255|unique:users',
+            'nickname' => 'nullable|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
+        // Assign 'Anonim' if nickname is not provided or null
+        $nickname = $request->input('nickname') ?? 'Anonim';
+
+        // If nickname is provided, check if it already exists
+        if ($request->filled('nickname')) {
+            $existingNickname = DB::table('users')->where('nickname', $nickname)->exists();
+            // If nickname already exists, return error
+            if ($existingNickname) {
+                return response()->json(['error' => 'Duplicate nickname not allowed'], 400);
+            }
+        }
+
+        // Create new user if nickname is unique
         $user = User::create([
             'name' => $request->name,
-            'nickname' => $request->nickname,
+            'nickname' => $nickname,
             'registered_at' => now(),
             'email' => $request->email,
             'password' => Hash::make($request->password),
