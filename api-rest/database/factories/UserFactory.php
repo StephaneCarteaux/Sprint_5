@@ -28,9 +28,7 @@ class UserFactory extends Factory
             'nickname' => fake()->boolean(50) ? fake()->userName() : 'Anonim',
             'registered_at' => now(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123456'),
-            'remember_token' => Str::random(10),
         ];
     }
 
@@ -66,9 +64,7 @@ class UserFactory extends Factory
                 'nickname' => 'admin',
                 'registered_at' => now(),
                 'email' => 'admin@api-rest.com',
-                'email_verified_at' => now(),
                 'password' => static::$password ??= Hash::make('123456'),
-                'remember_token' => Str::random(10),
 
             ];
         });
