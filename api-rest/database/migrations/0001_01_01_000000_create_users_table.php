@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('nickname')->default('Anonim');
+            $table->string('nickname');
             $table->timestamp('registered_at')->useCurrent();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -23,19 +23,6 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-
-        // Create trigger to check unicity of nickname
-        DB::unprepared('
-            CREATE TRIGGER unique_nickname_before_insert
-            BEFORE INSERT ON users
-            FOR EACH ROW
-            BEGIN
-                IF NEW.nickname != "Anonim" AND 
-                   (SELECT COUNT(*) FROM users WHERE nickname = NEW.nickname) > 0 THEN
-                    SIGNAL SQLSTATE "45000" SET MESSAGE_TEXT = "Duplicate nickname not allowed";
-                END IF;
-            END
-        ');
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
