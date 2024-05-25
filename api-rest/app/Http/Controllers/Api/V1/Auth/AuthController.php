@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -48,7 +47,9 @@ class AuthController extends Controller
 
         // If nickname is not unique, return error
         if ($nickname !== 'Anonim' && User::where('nickname', $nickname)->exists()) {
-            return response()->json(['error' => 'The nickname has already been taken'], 400);
+            return response()->json([
+                'errors' => ['nickname' => ['The nickname has already been taken.']],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Create new user if nickname is unique
@@ -62,12 +63,10 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('Personal Access Token')->accessToken;
-    
+
         return response()->json([
             'message' => 'Successfully registered',
             'token' => $token,
         ], Response::HTTP_CREATED);
     }
-
-    
 }
