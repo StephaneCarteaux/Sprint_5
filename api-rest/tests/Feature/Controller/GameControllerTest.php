@@ -13,7 +13,7 @@ class GameControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $this->accessToken;
+        $token = $user->createToken('TestToken')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $payload = [
@@ -25,7 +25,7 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
-    public function testNotAuthenticatedUserCanNotPlay()
+    public function testNotAuthenticatedUserCannotPlay()
     {
         //$this->withoutExceptionHandling();
 

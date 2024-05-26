@@ -46,6 +46,6 @@ abstract class TestCase extends BaseTestCase
             
         ])->assignRole('player');
         
-        $this->accessToken = $user->createToken('TestToken')->accessToken;
+        // $this->accessToken = $user->createToken('TestToken')->accessToken;
     }
 }
