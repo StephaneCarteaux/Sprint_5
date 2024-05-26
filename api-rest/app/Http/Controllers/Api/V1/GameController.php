@@ -11,7 +11,7 @@ class GameController extends Controller
     public function play(Request $request)
     {
         $request->validate([
-            'id' => 'required|integer'
+            //'id' => 'required|integer'
         ]);
 
         $dice_1 = rand(1, 6);
