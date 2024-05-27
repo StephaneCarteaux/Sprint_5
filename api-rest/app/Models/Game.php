@@ -16,7 +16,7 @@ class Game extends Model
         'dice_2',
     ];
 
-    public function user(): BelongsTo
+    public function users(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
