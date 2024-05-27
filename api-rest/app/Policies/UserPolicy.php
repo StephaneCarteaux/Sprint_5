@@ -10,17 +10,19 @@ class UserPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $authenticatedUser): bool
     {
-        return $user->hasRole('admin');
+        // Check if the user has the permission to view players
+        return $authenticatedUser->hasRole('admin');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model)
+    public function view(User $authenticatedUser, User $model)
     {
-        //
+        // Check if the user has the permission to view players
+        return $authenticatedUser->id === $model->id;
     }
 
     /**
