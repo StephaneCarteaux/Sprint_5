@@ -1,15 +1,16 @@
 <?php
 
-namespace Tests\Feature\Controller;
+namespace Tests\Feature\Controller\Auth;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Response;
 
-class AuthControllerTest extends TestCase
+class RegisterControllerTest extends TestCase
 {
-    public function testUserIsCreatedSuccessfully()
+    // Register new user
+    public function testUserIsRegisteredSuccessfully()
     {
         $payload = [
             'name'      => fake()->name,
@@ -33,7 +34,7 @@ class AuthControllerTest extends TestCase
         );
     }
 
-    public function testRequiredFieldsAreProvided()
+    public function testRequiredFieldsAreNotProvided()
     {
         $payload = [
             'name'      => '',
@@ -47,7 +48,7 @@ class AuthControllerTest extends TestCase
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertInvalid(['name'])
             ->assertInvalid(['email'])
-            ->assertInvalid(['password']); 
+            ->assertInvalid(['password']);
     }
 
     public function testEmailIsUnique()
@@ -80,38 +81,5 @@ class AuthControllerTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertInvalid(['nickname']);
-    }
-
-    public function testUserCanLoginSuccessfully()
-    {
-        $loginData = [
-            'email'     => 'test@example.com',
-            'password'  => 'password123',
-        ];
-        
-        $response = $this->json('POST', '/api/v1/login', $loginData);
-        $response
-            ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure([
-                'message',
-                'token',
-            ])
-            ;
-
-        // Check that the token is in the response
-        $this->assertArrayHasKey('token', $response->json());
-    }
-
-    public function testUserCanNotLoginSuccessfully()
-    {
-        $this->withoutExceptionHandling();
-        $loginData = [
-            'email'     => 'test@example.com',
-            'password'  => 'wrongpassword',
-        ];
-        
-        $response = $this->json('POST', '/api/v1/login', $loginData);
-        $response
-            ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }

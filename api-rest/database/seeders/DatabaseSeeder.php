@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             GameSeeder::class,
+            PassportSeeder::class,
         ]); 
     }
 

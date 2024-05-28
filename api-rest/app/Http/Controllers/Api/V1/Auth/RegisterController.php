@@ -9,32 +9,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
-class AuthController extends Controller
+class RegisterController extends Controller
 {
-    // Login
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $token = $user->createToken('Personal Access Token')->accessToken;
-
-        return response()->json([
-            'message' => 'Successfully logged in',
-            'token' => $token,
-        ], Response::HTTP_OK);
-    }
-
     // Register
     public function register(Request $request)
     {
+        // Validate request
         $request->validate([
             'name' => 'required|string|max:255',
             'nickname' => 'nullable|string|max:255',
@@ -62,8 +42,10 @@ class AuthController extends Controller
             'remember_token' => Str::random(10),
         ]);
 
+        // Get token
         $token = $user->createToken('Personal Access Token')->accessToken;
 
+        // Return response
         return response()->json([
             'message' => 'Successfully registered',
             'token' => $token,
