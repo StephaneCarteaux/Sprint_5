@@ -8,8 +8,6 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-
-
 abstract class TestCase extends BaseTestCase
 {
     // Trait that executes migrations before each test
