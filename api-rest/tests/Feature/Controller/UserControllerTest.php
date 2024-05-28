@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 class UserControllerTest extends TestCase
 {
     // Update
-    public function testUserCannotUpdatWithEmptyName()
+    public function testAuthenticatedUserCannoChangeNicknameWithEmptyNickname()
     {
         //$this->withoutExceptionHandling();
 
@@ -20,15 +20,15 @@ class UserControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('PUT', "/api/v1/players/{$user->id}", [
-                'name' => '',
+                'nickname' => '',
             ]);
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertInvalid(['name']);
+            ->assertInvalid(['nickname']);
     }
 
-    public function testUserCannotUpdatWithoutToken()
+    public function testAuthenticatedUserCannotChangeNicknameWithoutToken()
     {
         //$this->withoutExceptionHandling();
 
@@ -38,13 +38,13 @@ class UserControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('PUT', "/api/v1/players/{$user->id}", [
-                'name' => 'Updated Test User',
+                'nickname' => 'Updated Nickname',
             ]);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testUserCannotUpdateOtherUser()
+    public function testAuthenticatedUserCannotChangeNicknameForAnotherUser()
     {
         //$this->withoutExceptionHandling();
 
@@ -54,15 +54,15 @@ class UserControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('PUT', "/api/v1/players/1", [
-                'name' => 'Updated Test User',
+                'nickname' => 'Updated Nickname',
             ]);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testUserCanUpdateSuccessfully()
+    public function testAuthenticatedUserCanChangeNicknameSuccessfully()
     {
-        //$this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
         $token = $user->createToken('TestToken')->accessToken;
@@ -70,24 +70,24 @@ class UserControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('PUT', "/api/v1/players/{$user->id}", [
-                'name' => 'Updated Test User',
+                'nickname' => 'Updated Nickname',
             ]);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJson([
             'data' => [
-                'name' => 'Updated Test User',
+                'nickname' => 'Updated Nickname',
             ]
         ]);
 
         $this->assertDatabaseHas('users', [
             'id'   => $user->id,
-            'name' => 'Updated Test User',
+            'nickname' => 'Updated Nickname',
         ]);
     }
 
     // Index
-    public function testAdminUserCanIndex()
+    public function testAdminCanlistAllPlayersWithStats()
     {
         //$this->withoutExceptionHandling();
 
@@ -106,7 +106,7 @@ class UserControllerTest extends TestCase
             ]);
     }
 
-    public function testNonAminUserCannotIndex()
+    public function testNonAminUserCannotlistAllPlayersWithStats()
     {
         //$this->withoutExceptionHandling();
 
