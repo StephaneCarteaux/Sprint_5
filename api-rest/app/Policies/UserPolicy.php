@@ -19,7 +19,7 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $authenticatedUser, User $model)
+    public function listPlayerGamesWithStats(User $authenticatedUser, User $model)
     {
         // Check if the user has the permission to view players
         return $authenticatedUser->id === $model->id;

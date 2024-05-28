@@ -12,12 +12,12 @@ use Illuminate\Http\Response;
 class GameController extends Controller
 {
     // Get all players whith stats (Admin only)
-    public function index(Request $request, $id, GameService $gameService)
+    public function listPlayerGamesWithStats(Request $request, $id, GameService $gameService)
     {
         $player = User::find($id);
 
         // Check if the user has the permission to view players
-        if (auth()->user()->cannot('view', $player)) {
+        if (auth()->user()->cannot('listPlayerGamesWithStats', $player)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
