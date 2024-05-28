@@ -14,10 +14,10 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     // Index
-    public function index(Request $request, GameService $gameService)
+    public function listAllPlayersWithStats(Request $request, GameService $gameService)
     {
         //Check if the user has the permission to view players
-        if (auth()->user()->cannot('viewAny', User::class)) {
+        if (auth()->user()->cannot('listAllPlayersWithStats', User::class)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
@@ -43,23 +43,23 @@ class UserController extends Controller
     }
 
     // Update
-    public function update(Request $request, $id)
+    public function changePlayerNickname(Request $request, $id)
     {
         // Validate request
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nickname' => 'required|string|max:255',
         ]);
 
         // Get user model from id
         $user = User::find($id);
 
         // Check if the user has the permission to update the player
-        if ($request->user()->cannot('update', $user)) {
+        if ($request->user()->cannot('changePlayerNickname', $user)) {
             abort(Response::HTTP_FORBIDDEN);
         }
 
         // Update player
-        $user->name = $request->name;
+        $user->nickname = $request->nickname;
         $user->save();
 
         // Return updated player
