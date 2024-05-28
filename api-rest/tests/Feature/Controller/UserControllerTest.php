@@ -15,7 +15,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -49,7 +49,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -65,7 +65,7 @@ class UserControllerTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -92,7 +92,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'admin@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -111,7 +111,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
