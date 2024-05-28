@@ -10,7 +10,7 @@ class UserPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $authenticatedUser): bool
+    public function listAllPlayersWithStats(User $authenticatedUser): bool
     {
         // Check if the user has the permission to view players
         return $authenticatedUser->hasRole('admin');
@@ -36,9 +36,9 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function changePlayerNickname(User $authenticatedUser, User $model): bool
     {
-        return $user->id === $model->id;
+        return $authenticatedUser->id === $model->id;
     }
 
     /**
