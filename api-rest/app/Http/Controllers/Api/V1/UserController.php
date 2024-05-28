@@ -21,16 +21,7 @@ class UserController extends Controller
             abort(Response::HTTP_FORBIDDEN);
         }
 
-        // Get all players
-        $playerRole = Role::where('name', 'player')->first();
-        $players = $playerRole->users()->get();
-
-        // Add games_won_percentage to each player
-        $playersWithStats = $players->map(function ($player) use ($gameService) {
-            $player->games_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
-            unset($player->pivot); // We don't want to include the pivot table in the response
-            return $player;
-        });
+        $playersWithStats = $gameService->getPlayersWithStats();
 
         // Calculate average percentage of games won
         $averagePercentageOfGamesWon = round($playersWithStats->avg('games_won_percentage'), 2);
