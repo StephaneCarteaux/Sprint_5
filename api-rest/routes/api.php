@@ -17,6 +17,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('players', [UserController::class, 'listAllPlayersWithStats'])->middleware('auth:api');
     Route::get('players/{id}/games', [GameController::class, 'listPlayerGamesWithStats'])->middleware('auth:api');
     Route::get('players/ranking', [RankingController::class, 'getRanking']);
+    Route::get('players/ranking/loser', [RankingController::class, 'getLoser']);
+    Route::get('players/ranking/winner', [RankingController::class, 'getWinner']);
 });
 
 // Route::get('/user', function (Request $request) {

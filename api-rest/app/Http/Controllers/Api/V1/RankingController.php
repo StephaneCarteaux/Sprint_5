@@ -16,15 +16,29 @@ class RankingController extends Controller
         $playersWithStats = $gameService->getPlayersWithStats();
 
         // Sort players by games_won_percentage
-        $ranking = $playersWithStats->sortByDesc('games_won_percentage');
-
-        // Calculate average percentage of games won
-        $averagePercentageOfGamesWon = round($playersWithStats->avg('games_won_percentage'), 2);
+        $ranking = $playersWithStats->sortByDesc('games_won_percentage')->select('nickname', 'games_won_percentage')->values();
 
         // Return players with games_won_percentage
         return response()->json([
             'data' => $ranking,
-            'average_percentage_of_games_won' => $averagePercentageOfGamesWon,
+        ], Response::HTTP_OK);
+    }
+
+    public function getLoser(Request $request, GameService $gameService)
+    {
+        $playersWithStats = $gameService->getPlayersWithStats();
+        $loser = $playersWithStats->sortByDesc('games_won_percentage')->select('nickname', 'games_won_percentage')->values()->first();
+        return response()->json([
+            'data' => $loser
+        ], Response::HTTP_OK);
+    }
+
+    public function getWinner(Request $request, GameService $gameService)
+    {
+        $playersWithStats = $gameService->getPlayersWithStats();
+        $winner = $playersWithStats->sortBy('games_won_percentage')->select('nickname', 'games_won_percentage')->values()->first();
+        return response()->json([
+            'data' => $winner
         ], Response::HTTP_OK);
     }
 }
