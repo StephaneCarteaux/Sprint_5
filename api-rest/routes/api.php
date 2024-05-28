@@ -13,6 +13,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/players', [RegisterController::class, 'register']);
     Route::put('players/{id}', [UserController::class, 'changePlayerNickname'])->middleware('auth:api');
     Route::post('players/{id}/games', [GameController::class, 'play'])->middleware('auth:api');
+    Route::delete('players/{id}/games', [GameController::class, 'deletePlayerGames'])->middleware('auth:api');
     Route::get('players', [UserController::class, 'listAllPlayersWithStats'])->middleware('auth:api');
     Route::get('players/{id}/games', [GameController::class, 'listPlayerGamesWithStats'])->middleware('auth:api');
     Route::get('players/ranking', [RankingController::class, 'getRanking']);
