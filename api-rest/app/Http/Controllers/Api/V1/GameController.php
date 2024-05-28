@@ -56,4 +56,22 @@ class GameController extends Controller
             'dice_2' => $dice_2
         ]);
     }
+
+    // Delete
+    public function deletePlayerGames(Request $request, $id)
+    {
+        $player = User::find($id);
+
+        // Check if the user has the permission to delete players
+        if (auth()->user()->cannot('deletePlayerGames', $player)) {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+
+        // Delete player games
+        $player->games()->delete();
+
+        return response()->json([
+            'message' => 'Player games deleted successfully'
+        ]);
+    }
 }
