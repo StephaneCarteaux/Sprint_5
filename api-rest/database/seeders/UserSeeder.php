@@ -13,12 +13,16 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //User::truncate();
         User::factory(9)->create()
             ->each(function ($user) {
                 $user->assignRole('player');
             });
-        
+
+        User::factory(1)->testUser()->create()
+            ->each(function ($user) {
+                $user->assignRole('player');
+            });
+
 
         User::factory(1)->admin()->create()
             ->each(function ($user) {

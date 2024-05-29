@@ -21,8 +21,19 @@ class LoginController extends Controller
 
         // Find user
         $user = User::where('email', $request->email)->first();
+
+        // Check if user exists
+        if (!$user) {
+            return response()->json([
+                'message' => 'The provided credentials are incorrect.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Check password
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'message' => 'The provided credentials are incorrect.',
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         // Create token

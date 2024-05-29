@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\User;
-use App\Models\Game;
 use Spatie\Permission\Models\Role;
 
 
@@ -37,5 +37,10 @@ class GameService
         }
         $wonGames = $player->games()->whereRaw('dice_1 + dice_2 = 7')->count();
         return $wonGames / $totalGames * 100;
+    }
+
+    public function getAveragePercentageOfGamesWon()
+    {
+        return round($this->getPlayersWithStats()->avg('games_won_percentage'), 2);
     }
 }

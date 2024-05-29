@@ -33,17 +33,5 @@ abstract class TestCase extends BaseTestCase
 
         // Create personal client access token for testing
         $this->artisan('passport:client --personal --no-interaction');
-
-        // Create test user
-        $user = User::factory()->create([
-            'name'          => 'Test User',
-            'nickname'      => 'test',
-            'registered_at' => now(),
-            'email'         => 'test@example.com',
-            'password'      => Hash::make('password123'),
-            
-        ])->assignRole('player');
-        
-        // $this->accessToken = $user->createToken('TestToken')->accessToken;
     }
 }
