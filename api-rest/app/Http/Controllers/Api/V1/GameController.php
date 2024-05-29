@@ -8,17 +8,20 @@ use Illuminate\Http\Request;
 use App\Services\GameService;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
-    // Get all players whith stats (Admin only)
+    // List player games with stats
     public function listPlayerGamesWithStats(Request $request, $id, GameService $gameService)
     {
         $player = User::find($id);
 
         // Check if the user has the permission to view players
-        if (auth()->user()->cannot('listPlayerGamesWithStats', $player)) {
-            abort(Response::HTTP_FORBIDDEN);
+        if (Auth::user()->cannot('listPlayerGamesWithStats', $player)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
         }
 
         $games = Game::where('user_id', $id)->select('dice_1', 'dice_2')->get();
@@ -34,9 +37,16 @@ class GameController extends Controller
         ]);
     }
 
-    // A player throws dices
+    // Play
     public function play(Request $request, $id)
     {
+        $player = User::find($id);
+        if (Auth::user()->cannot('play', $player)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $dice_1 = rand(1, 6);
         $dice_2 = rand(1, 6);
 
@@ -57,17 +67,19 @@ class GameController extends Controller
         ]);
     }
 
-    // Delete
+    // Delete player games
     public function deletePlayerGames(Request $request, $id)
     {
         $player = User::find($id);
 
         // Check if the user has the permission to delete players
-        if (auth()->user()->cannot('deletePlayerGames', $player)) {
-            abort(Response::HTTP_FORBIDDEN);
+        if (Auth::user()->cannot('checkIsSameAsUserId', $player)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        // Delete player games
+        // Delete
         $player->games()->delete();
 
         return response()->json([

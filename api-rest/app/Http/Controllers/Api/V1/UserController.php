@@ -5,26 +5,27 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 use App\Services\GameService;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    // Index
+    // List all players with stats
     public function listAllPlayersWithStats(Request $request, GameService $gameService)
     {
         //Check if the user has the permission to view players
-        if (auth()->user()->cannot('listAllPlayersWithStats', User::class)) {
-            abort(Response::HTTP_FORBIDDEN);
+        if (Auth::user()->cannot('listAllPlayersWithStats', User::class)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
         }
 
+        // Get players with games_won_percentage
         $playersWithStats = $gameService->getPlayersWithStats();
 
-        // Calculate average percentage of games won
-        $averagePercentageOfGamesWon = round($playersWithStats->avg('games_won_percentage'), 2);
+        // Get average_percentage_of_games_won
+        $averagePercentageOfGamesWon = $gameService->getAveragePercentageOfGamesWon();
 
         // Return players with games_won_percentage
         return response()->json([
@@ -33,7 +34,7 @@ class UserController extends Controller
         ], Response::HTTP_OK);
     }
 
-    // Update
+    // Change player nickname
     public function changePlayerNickname(Request $request, $id)
     {
         // Validate request
@@ -45,8 +46,10 @@ class UserController extends Controller
         $user = User::find($id);
 
         // Check if the user has the permission to update the player
-        if ($request->user()->cannot('changePlayerNickname', $user)) {
-            abort(Response::HTTP_FORBIDDEN);
+        if (Auth::user()->cannot('checkIsSameAsUserId', $user)) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], Response::HTTP_FORBIDDEN);
         }
 
         // Update player
