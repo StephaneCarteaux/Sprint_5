@@ -21,7 +21,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('listPlayerGamesWithStats', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $games = Game::where('user_id', $id)->select('dice_1', 'dice_2')->get();
@@ -44,7 +44,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('play', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $dice_1 = rand(1, 6);
@@ -76,7 +76,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('checkIsSameAsUserId', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         // Delete

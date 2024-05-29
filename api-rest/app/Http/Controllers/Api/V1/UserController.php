@@ -18,7 +18,7 @@ class UserController extends Controller
         if (Auth::user()->cannot('listAllPlayersWithStats', User::class)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         // Get players with games_won_percentage
@@ -49,7 +49,7 @@ class UserController extends Controller
         if (Auth::user()->cannot('checkIsSameAsUserId', $user)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         // Update player

@@ -57,7 +57,7 @@ class UserControllerTest extends TestCase
                 'nickname' => 'Updated Nickname',
             ]);
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testAuthenticatedUserCanChangeNicknameSuccessfully()
@@ -118,6 +118,6 @@ class UserControllerTest extends TestCase
             ->json('GET', 'api/v1/players');
 
         $response
-            ->assertStatus(Response::HTTP_FORBIDDEN);
+            ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }
