@@ -1,0 +1,6 @@
+{
+    "phpunit.codeLens.enabled": false,
+    "phpunit.args": [
+        "--configuration=api-rest/phpunit.xml"
+    ]
+}

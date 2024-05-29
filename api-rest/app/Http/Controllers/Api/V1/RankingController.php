@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Response;
 use App\Services\GameService;
-use Spatie\Permission\Models\Role;
 
 class RankingController extends Controller
 {
+    // Get ranking
     public function getRanking(Request $request, GameService $gameService)
     {
         $playersWithStats = $gameService->getPlayersWithStats();
@@ -24,6 +23,7 @@ class RankingController extends Controller
         ], Response::HTTP_OK);
     }
 
+    // Get loser
     public function getLoser(Request $request, GameService $gameService)
     {
         $playersWithStats = $gameService->getPlayersWithStats();
@@ -33,6 +33,7 @@ class RankingController extends Controller
         ], Response::HTTP_OK);
     }
 
+    // Get winner
     public function getWinner(Request $request, GameService $gameService)
     {
         $playersWithStats = $gameService->getPlayersWithStats();

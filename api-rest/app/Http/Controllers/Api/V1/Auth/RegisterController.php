@@ -28,6 +28,7 @@ class RegisterController extends Controller
         // If nickname is not unique, return error
         if ($nickname !== 'Anonim' && User::where('nickname', $nickname)->exists()) {
             return response()->json([
+                'message' => 'The nickname has already been taken.',
                 'errors' => ['nickname' => ['The nickname has already been taken.']],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }

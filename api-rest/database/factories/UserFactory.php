@@ -47,14 +47,14 @@ class UserFactory extends Factory
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function anonim()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'nickname' => 'Anonim',
-            ];
-        });
-    }
+    // public function anonim()
+    // {
+    //     return $this->state(function (array $attributes) {
+    //         return [
+    //             'nickname' => 'Anonim',
+    //         ];
+    //     });
+    // }
 
     public function admin()
     {
@@ -64,6 +64,20 @@ class UserFactory extends Factory
                 'nickname' => 'admin',
                 'registered_at' => now(),
                 'email' => 'admin@example.com',
+                'password' => static::$password ??= Hash::make('password123'),
+
+            ];
+        });
+    }
+
+    public function testUser()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'name' => 'Test User',
+                'nickname' => 'test',
+                'registered_at' => now(),
+                'email' => 'test@example.com',
                 'password' => static::$password ??= Hash::make('password123'),
 
             ];
