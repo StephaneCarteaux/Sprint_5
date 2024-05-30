@@ -11,6 +11,36 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/players",
+     *     tags={"Register"},
+     *     summary="Registers a new user",
+     *     description="Registers a new user in the application.",
+     *     operationId="register",
+     * 
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User registration data",
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="nickname", type="string", example="johndoe", nullable=true),
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successfully registered",
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *     ),
+     * )
+     */
+
     // Register
     public function register(Request $request)
     {
