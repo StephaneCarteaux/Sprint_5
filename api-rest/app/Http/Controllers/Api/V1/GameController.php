@@ -12,6 +12,40 @@ use Illuminate\Support\Facades\Auth;
 
 class GameController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/players/{id}/games",
+     *     tags={"Games"},
+     *     summary="List player games with stats",
+     *     description="Retrieve a list of games played by the player along with statistics.",
+     *     operationId="listPlayerGamesWithStats",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Player ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of games and player's win percentage",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="dice_1", type="integer", example=3),
+     *                 @OA\Property(property="dice_2", type="integer", example=4),
+     *                 @OA\Property(property="result", type="string", example="won")
+     *             )),
+     *             @OA\Property(property="player_won_percentage", type="number", format="float", example=50.0)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *     )
+     * )
+     */
+
     // List player games with stats
     public function listPlayerGamesWithStats(Request $request, $id, GameService $gameService)
     {
@@ -21,7 +55,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('listPlayerGamesWithStats', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $games = Game::where('user_id', $id)->select('dice_1', 'dice_2')->get();
@@ -37,6 +71,36 @@ class GameController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/players/{id}/games",
+     *     tags={"Games"},
+     *     summary="Play a game",
+     *     description="Rolls two dice for the player.",
+     *     operationId="play",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Player ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dice roll results",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="dice_1", type="integer", example=3),
+     *             @OA\Property(property="dice_2", type="integer", example=4)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *     )
+     * )
+     */
+
     // Play
     public function play(Request $request, $id)
     {
@@ -44,7 +108,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('play', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $dice_1 = rand(1, 6);
@@ -67,6 +131,35 @@ class GameController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/players/{id}/games",
+     *     tags={"Games"},
+     *     summary="Delete player games",
+     *     description="Deletes all games for a player.",
+     *     operationId="deletePlayerGames",
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Player ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Player games deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Player games deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *     )
+     * )
+     */
+
     // Delete player games
     public function deletePlayerGames(Request $request, $id)
     {
@@ -76,7 +169,7 @@ class GameController extends Controller
         if (Auth::user()->cannot('checkIsSameAsUserId', $player)) {
             return response()->json([
                 'message' => 'Unauthorized'
-            ], Response::HTTP_FORBIDDEN);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         // Delete

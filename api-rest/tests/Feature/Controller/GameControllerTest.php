@@ -17,12 +17,8 @@ class GameControllerTest extends TestCase
         $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
-        $payload = [
-            'email'     => $user->email,
-        ];
-
         $response = $this->withHeaders($headers)
-            ->json('POST', "/api/v1/players/{$user->id}/games", $payload);
+            ->json('POST', "/api/v1/players/{$user->id}/games");
         $response->assertStatus(Response::HTTP_OK);
     }
 
@@ -34,12 +30,21 @@ class GameControllerTest extends TestCase
         $token = null;
         $headers = ['Authorization' => "Bearer $token"];
 
-        $payload = [
-            'email'     => $user->email,
-        ];
+        $response = $this->withHeaders($headers)
+            ->json('POST', "/api/v1/players/{$user->id}/games");
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function testAdminCannotPlay()
+    {
+        //$this->withoutExceptionHandling();
+
+        $user = User::where('email', 'admin@example.com')->first();
+        $token = $user->createToken('Personal Access Token')->accessToken;
+        $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
-            ->json('POST', "/api/v1/players/{$user->id}/games", $payload);
+            ->json('POST', "/api/v1/players/{$user->id}/games");
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
@@ -80,7 +85,20 @@ class GameControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('GET', "/api/v1/players/2/games");
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function testAdminCanlistPlayerGamesWithStats(){
+
+        //$this->withoutExceptionHandling();
+        
+        $user = User::where('email', 'admin@example.com')->first();
+        $token = $user->createToken('Personal Access Token')->accessToken;
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->withHeaders($headers)
+            ->json('GET', "/api/v1/players/1/games");
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     // Delete player games
@@ -103,7 +121,7 @@ class GameControllerTest extends TestCase
         ]);
     }
 
-    public function testNonAuthenticatedUserCanDeletePlayerGames()
+    public function testNonAuthenticatedUserCannotDeletePlayerGames()
     {
         //$this->withoutExceptionHandling();
 
@@ -126,6 +144,6 @@ class GameControllerTest extends TestCase
 
         $response = $this->withHeaders($headers)
             ->json('DELETE', "/api/v1/players/2/games");
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }
