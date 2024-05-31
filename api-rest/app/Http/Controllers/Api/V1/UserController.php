@@ -22,18 +22,14 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="List of players with their win percentage and average win percentage",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="name", type="string", example="John"),
-     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=50.0),
-     *                 @OA\Property(property="average_games_won_percentage", type="number", format="float", example=50.0)
-     *             ))
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ListAllPlayersWithStats"),
+     * 
      *     ),
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
-     *     )
+     *     ),
+     * 
      * )
      */
 
@@ -53,12 +49,10 @@ class UserController extends Controller
         // Get average_percentage_of_games_won
         $averagePercentageOfGamesWon = $gameService->getAveragePercentageOfGamesWon();
 
-        $data = $playersWithStats;
-        $data[] = ['average_games_won_percentage' => $averagePercentageOfGamesWon];
-
         // Return players with games_won_percentage
         return response()->json([
-            'data' => $data
+            'data' => $playersWithStats,
+            'average_percentage_of_games_won' => $averagePercentageOfGamesWon
         ], Response::HTTP_OK);
     }
 
@@ -86,6 +80,13 @@ class UserController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Nickname updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Nickname updated successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="nickname", type="string", example="john_doe")
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=401,

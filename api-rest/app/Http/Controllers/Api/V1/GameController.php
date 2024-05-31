@@ -30,14 +30,8 @@ class GameController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="List of games and player's win percentage",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data",
-     * type="object", @OA\Items(
-     *                 @OA\Property(property="name", type="string", example="John"),
-     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=50.0),
-     *                 @OA\Property(property="average_games_won_percentage", type="number", format="float", example=50.0)
-     *             ))
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ListPlayerGamesWithStats")
+     *         
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -65,12 +59,10 @@ class GameController extends Controller
         }
         $player_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
 
-        $data = $games;
-        $data[] = ['player_won_percentage' => $player_won_percentage];
-
         // Return games and player's win percentage
         return response()->json([
-            'data' => $data
+            'data' => $games,
+            'player_won_percentage' => $player_won_percentage
         ], Response::HTTP_OK);
     }
 
