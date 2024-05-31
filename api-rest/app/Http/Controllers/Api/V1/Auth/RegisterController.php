@@ -33,6 +33,9 @@ class RegisterController extends Controller
      *     @OA\Response(
      *         response=201,
      *         description="Successfully registered",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Successfully registered"),
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=422,
