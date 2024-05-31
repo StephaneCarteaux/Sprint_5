@@ -31,12 +31,12 @@ class GameController extends Controller
      *         response=200,
      *         description="List of games and player's win percentage",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="dice_1", type="integer", example=3),
-     *                 @OA\Property(property="dice_2", type="integer", example=4),
-     *                 @OA\Property(property="result", type="string", example="won")
-     *             )),
-     *             @OA\Property(property="player_won_percentage", type="number", format="float", example=50.0)
+     *             @OA\Property(property="data",
+     * type="object", @OA\Items(
+     *                 @OA\Property(property="name", type="string", example="John"),
+     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=50.0),
+     *                 @OA\Property(property="average_games_won_percentage", type="number", format="float", example=50.0)
+     *             ))
      *         )
      *     ),
      *     @OA\Response(
@@ -65,10 +65,13 @@ class GameController extends Controller
         }
         $player_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
 
+        $data = $games;
+        $data[] = ['player_won_percentage' => $player_won_percentage];
+
+        // Return games and player's win percentage
         return response()->json([
-            'data' => $games,
-            'player_won_percentage' => round($player_won_percentage, 2),
-        ]);
+            'data' => $data
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -90,8 +93,10 @@ class GameController extends Controller
      *         response=200,
      *         description="Dice roll results",
      *         @OA\JsonContent(
+     *         @OA\Property(property="data", type="object",
      *             @OA\Property(property="dice_1", type="integer", example=3),
      *             @OA\Property(property="dice_2", type="integer", example=4)
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -117,8 +122,10 @@ class GameController extends Controller
         $this->store($id, $dice_1, $dice_2);
 
         return response()->json([
-            'dice_1' => $dice_1,
-            'dice_2' => $dice_2,
+            'data' => [
+                'dice_1' => $dice_1,
+                'dice_2' => $dice_2,
+            ]
         ]);
     }
 

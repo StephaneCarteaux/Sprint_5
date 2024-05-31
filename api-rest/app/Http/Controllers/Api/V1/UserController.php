@@ -24,10 +24,10 @@ class UserController extends Controller
      *         description="List of players with their win percentage and average win percentage",
      *         @OA\JsonContent(
      *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="nickname", type="string", example="player1"),
-     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=75.0)
-     *             )),
-     *             @OA\Property(property="average_percentage_of_games_won", type="number", format="float", example=50.0)
+     *                 @OA\Property(property="name", type="string", example="John"),
+     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=50.0),
+     *                 @OA\Property(property="average_games_won_percentage", type="number", format="float", example=50.0)
+     *             ))
      *         )
      *     ),
      *     @OA\Response(
@@ -53,10 +53,12 @@ class UserController extends Controller
         // Get average_percentage_of_games_won
         $averagePercentageOfGamesWon = $gameService->getAveragePercentageOfGamesWon();
 
+        $data = $playersWithStats;
+        $data[] = ['average_games_won_percentage' => $averagePercentageOfGamesWon];
+
         // Return players with games_won_percentage
         return response()->json([
-            'data' => $playersWithStats,
-            'average_percentage_of_games_won' => $averagePercentageOfGamesWon,
+            'data' => $data
         ], Response::HTTP_OK);
     }
 
@@ -83,13 +85,7 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Updated player with new nickname",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="nickname", type="string", example="new_nickname")
-     *             )
-     *         )
+     *         description="Nickname updated successfully",
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -120,13 +116,25 @@ class UserController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
+        // If nickname is not unique, return error
+        if ($request->nickname !== 'Anonim' && User::where('nickname', $request->nickname)->exists()) {
+            return response()->json([
+                'message' => 'The nickname has already been taken.',
+                'errors' => ['nickname' => ['The nickname has already been taken.']],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         // Update player
         $user->nickname = $request->nickname;
         $user->save();
 
         // Return updated player
         return response()->json([
-            'data' => $user
+            'message' => 'Nickname updated successfully',
+            'data' => [
+                'name' => $user->name,
+                'nickname' => $user->nickname
+            ]
         ], Response::HTTP_OK);
     }
 }
