@@ -53,12 +53,12 @@ class UserController extends Controller
         // Get average_percentage_of_games_won
         $averagePercentageOfGamesWon = $gameService->getAveragePercentageOfGamesWon();
 
+        $data = $playersWithStats;
+        $data[] = ['average_games_won_percentage' => $averagePercentageOfGamesWon];
+
         // Return players with games_won_percentage
         return response()->json([
-            'data' => [
-                'players' => $playersWithStats,
-                'average_percentage_of_games_won' => $averagePercentageOfGamesWon,
-            ]
+            'data' => $data
         ], Response::HTTP_OK);
     }
 

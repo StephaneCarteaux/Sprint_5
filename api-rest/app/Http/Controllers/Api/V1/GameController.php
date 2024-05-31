@@ -65,10 +65,13 @@ class GameController extends Controller
         }
         $player_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
 
+        $data = $games;
+        $data[] = ['player_won_percentage' => $player_won_percentage];
+
+        // Return games and player's win percentage
         return response()->json([
-            'data' => $games,
-            'player_won_percentage' => round($player_won_percentage, 2),
-        ]);
+            'data' => $data
+        ], Response::HTTP_OK);
     }
 
     /**
