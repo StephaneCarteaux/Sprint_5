@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use OpenApi\Annotations as OA;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
