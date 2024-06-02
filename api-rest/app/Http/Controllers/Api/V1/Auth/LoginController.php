@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use OpenApi\Annotations as OA;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,7 +12,6 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-
     /**
      * @OA\Post(
      *     path="/login",

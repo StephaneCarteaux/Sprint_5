@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use OpenApi\Annotations as OA;
+
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="Api Rest Stef - Documentation",
- *      description="L5 Swagger OpenApi description",
+ *      title="Api Rest Stef - OpenApi 3.0",
+ *      description="This is an OpenApi 3.0 specification for Api Rest Stef",
  *      @OA\Contact(
  *          email="admin@example.com"
  *      ),
@@ -96,6 +98,6 @@ namespace App\Http\Controllers\Api;
  * )
  */
 
-class Controller
+class OpenApi
 {
 }
