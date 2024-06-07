@@ -54,16 +54,12 @@ class GameController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $games = Game::where('user_id', $id)->select('dice_1', 'dice_2')->get();
-        foreach ($games as $game) {
-            $sum = $game->dice_1 + $game->dice_2;
-            $game->result = $sum === 7 ? 'won' : 'lost';
-        }
+        $gamesWithResult = $gameService->getGamesWithResult($player);
         $player_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
 
         // Return games and player's win percentage
         return response()->json([
-            'data' => $games,
+            'data' => $gamesWithResult,
             'player_won_percentage' => $player_won_percentage
         ], Response::HTTP_OK);
     }
@@ -101,7 +97,7 @@ class GameController extends Controller
      */
 
     // Play
-    public function play(Request $request, $id)
+    public function play(Request $request, $id, GameService $gameService)
     {
         $player = User::find($id);
         if (Auth::user()->cannot('play', $player)) {
@@ -110,15 +106,14 @@ class GameController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $dice_1 = rand(1, 6);
-        $dice_2 = rand(1, 6);
+        $play = $gameService->play($player);
 
-        $this->store($id, $dice_1, $dice_2);
+        $this->store($play['player_id'], $play['dice_1'], $play['dice_2']);
 
         return response()->json([
             'data' => [
-                'dice_1' => $dice_1,
-                'dice_2' => $dice_2,
+                'dice_1' => $play['dice_1'],
+                'dice_2' => $play['dice_2']
             ]
         ]);
     }
