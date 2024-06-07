@@ -37,6 +37,18 @@ class LoginControllerTest extends TestCase
 
         $response = $this->json('POST', '/api/v1/login', $loginData);
         $response
-            ->assertStatus(Response::HTTP_UNAUTHORIZED);
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testUserCannotLoginWithWrongEmail()
+    {
+        $loginData = [
+            'email'     => 'wrongemail',
+            'password'  => 'password123',
+        ];
+
+        $response = $this->json('POST', '/api/v1/login', $loginData);
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

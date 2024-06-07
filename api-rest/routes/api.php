@@ -6,6 +6,7 @@ use \App\Http\Controllers\Api\V1\Auth\LoginController;
 use \App\Http\Controllers\Api\V1\Auth\RegisterController;
 use \App\Http\Controllers\Api\V1\UserController;
 use \App\Http\Controllers\Api\V1\GameController;
+use \App\Http\Controllers\Api\V1\RankingController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post('/login', [LoginController::class, 'login']);
@@ -15,6 +16,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::delete('players/{id}/games', [GameController::class, 'deletePlayerGames'])->middleware('auth:api');
     Route::get('players', [UserController::class, 'listAllPlayersWithStats'])->middleware('auth:api');
     Route::get('players/{id}/games', [GameController::class, 'listPlayerGamesWithStats'])->middleware('auth:api');
+    Route::get('players/ranking', [RankingController::class, 'getRanking']);
+    Route::get('players/ranking/loser', [RankingController::class, 'getLoser']);
+    Route::get('players/ranking/winner', [RankingController::class, 'getWinner']);
 });
 
 // Route::get('/user', function (Request $request) {

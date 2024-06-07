@@ -15,12 +15,30 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
             ->json('PUT', "/api/v1/players/{$user->id}", [
                 'nickname' => '',
+            ]);
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertInvalid(['nickname']);
+    }
+
+    public function testAuthenticatedUserCannoChangeNicknameIfAllreadyTaken()
+    {
+        //$this->withoutExceptionHandling();
+
+        $user = User::where('email', 'test@example.com')->first();
+        $token = $user->createToken('Personal Access Token')->accessToken;
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->withHeaders($headers)
+            ->json('PUT', "/api/v1/players/{$user->id}", [
+                'nickname' => $user->nickname,
             ]);
 
         $response
@@ -49,7 +67,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -57,7 +75,7 @@ class UserControllerTest extends TestCase
                 'nickname' => 'Updated Nickname',
             ]);
 
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testAuthenticatedUserCanChangeNicknameSuccessfully()
@@ -65,7 +83,7 @@ class UserControllerTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -92,7 +110,7 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'admin@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
@@ -101,7 +119,19 @@ class UserControllerTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
-                'data',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'nickname',
+                        'registered_at',
+                        'email',
+                        'email_verified_at',
+                        'created_at',
+                        'updated_at',
+                        'games_won_percentage',
+                    ]
+                ],
                 'average_percentage_of_games_won',
             ]);
     }
@@ -111,13 +141,13 @@ class UserControllerTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = User::where('email', 'test@example.com')->first();
-        $token = $user->createToken('TestToken')->accessToken;
+        $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
 
         $response = $this->withHeaders($headers)
             ->json('GET', 'api/v1/players');
 
         $response
-            ->assertStatus(Response::HTTP_FORBIDDEN);
+            ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 }
