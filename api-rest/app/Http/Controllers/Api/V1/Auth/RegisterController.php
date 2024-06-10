@@ -78,6 +78,8 @@ class RegisterController extends Controller
             'remember_token' => Str::random(10),
         ]);
 
+        $user->assignRole('player');
+
         // Get token
         $token = $user->createToken('Personal Access Token')->accessToken;
 
