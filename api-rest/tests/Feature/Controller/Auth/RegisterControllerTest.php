@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Spatie\Permission\Models\Role;
 
 class RegisterControllerTest extends TestCase
 {
@@ -29,6 +30,13 @@ class RegisterControllerTest extends TestCase
             'email'     => $payload['email'],
         ]);
 
+        // Check that user has role "player"
+        $this->assertDatabaseHas('model_has_roles', [
+            'role_id'   => Role::where('name', 'player')->first()->id,
+            'model_id'  => User::where('email', $payload['email'])->first()->id,
+        ]);
+
+        // Check that the password is set correctly
         $this->assertTrue(
             Hash::check($payload['password'], User::where('email', $payload['email'])->first()->password)
         );
