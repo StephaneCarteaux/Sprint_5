@@ -62,7 +62,7 @@
             deepLinking: true,
             filter: {!! config('l5-swagger.defaults.ui.display.filter') ? 'true' : 'false' !!},
             persistAuthorization: "{!! config('l5-swagger.defaults.ui.authorization.persist_authorization') ? 'true' : 'false' !!}",
-
+            defaultModelsExpandDepth: {!! config('l5-swagger.defaults.ui.display.default_models_expand_depth') !!},
         })
 
         window.ui = ui

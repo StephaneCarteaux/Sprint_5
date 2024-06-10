@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use OpenApi\Annotations as OA;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -25,7 +27,7 @@ class RegisterController extends Controller
      *         @OA\JsonContent(
      *             required={"name", "email", "password"},
      *             @OA\Property(property="name", type="string", example="John Doe"),
-     *             @OA\Property(property="nickname", type="string", example="johndoe", nullable=true),
+     *             @OA\Property(property="nickname", type="string", example="john_doe", nullable=true),
      *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *             @OA\Property(property="password", type="string", example="password123"),
      *         ),

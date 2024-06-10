@@ -20,6 +20,30 @@ class GameControllerTest extends TestCase
         $response = $this->withHeaders($headers)
             ->json('POST', "/api/v1/players/{$user->id}/games");
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'dice_1',
+                'dice_2',
+            ]
+        ]);
+    }
+
+    public function testGameResultsAreStoredInDatabase()
+    {
+        //$this->withoutExceptionHandling();
+
+        $user = User::where('email', 'test@example.com')->first();
+        $token = $user->createToken('Personal Access Token')->accessToken;
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->withHeaders($headers)
+            ->json('POST', "/api/v1/players/{$user->id}/games");
+
+        $this->assertDatabaseHas('games', [
+            'user_id' => $user->id,
+            'dice_1' => $response['data']['dice_1'],
+            'dice_2' => $response['data']['dice_2'],
+        ]);
     }
 
     public function testNonAuthenticatedUserCannotPlay()
@@ -49,10 +73,11 @@ class GameControllerTest extends TestCase
     }
 
     // List player games
-    public function testAthenticatedUserCanlistPlayerGamesWithStats(){
+    public function testAthenticatedUserCanlistPlayerGamesWithStats()
+    {
 
         //$this->withoutExceptionHandling();
-        
+
         $user = User::where('email', 'test@example.com')->first();
         $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
@@ -60,12 +85,23 @@ class GameControllerTest extends TestCase
         $response = $this->withHeaders($headers)
             ->json('GET', "/api/v1/players/{$user->id}/games");
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'dice_1',
+                    'dice_2',
+                    'result',
+                ]
+            ],
+            'player_won_percentage',
+        ]);
     }
 
-    public function testNonAthenticatedUserCannotlistPlayerGamesWithStats(){
+    public function testNonAthenticatedUserCannotlistPlayerGamesWithStats()
+    {
 
         //$this->withoutExceptionHandling();
-        
+
         $user = User::where('email', 'test@example.com')->first();
         $token = null;
         $headers = ['Authorization' => "Bearer $token"];
@@ -75,10 +111,11 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testAthenticatedUserCannotlistPlayerGamesWithStatsForAnotherUser(){
+    public function testAthenticatedUserCannotlistPlayerGamesWithStatsForAnotherUser()
+    {
 
         //$this->withoutExceptionHandling();
-        
+
         $user = User::where('id', '1')->first();
         $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];
@@ -88,10 +125,11 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testAdminCanlistPlayerGamesWithStats(){
+    public function testAdminCanlistPlayerGamesWithStats()
+    {
 
         //$this->withoutExceptionHandling();
-        
+
         $user = User::where('email', 'admin@example.com')->first();
         $token = $user->createToken('Personal Access Token')->accessToken;
         $headers = ['Authorization' => "Bearer $token"];

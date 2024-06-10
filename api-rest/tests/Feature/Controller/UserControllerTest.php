@@ -28,6 +28,24 @@ class UserControllerTest extends TestCase
             ->assertInvalid(['nickname']);
     }
 
+    public function testAuthenticatedUserCannoChangeNicknameIfAllreadyTaken()
+    {
+        //$this->withoutExceptionHandling();
+
+        $user = User::where('email', 'test@example.com')->first();
+        $token = $user->createToken('Personal Access Token')->accessToken;
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $response = $this->withHeaders($headers)
+            ->json('PUT', "/api/v1/players/{$user->id}", [
+                'nickname' => $user->nickname,
+            ]);
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertInvalid(['nickname']);
+    }
+
     public function testAuthenticatedUserCannotChangeNicknameWithoutToken()
     {
         //$this->withoutExceptionHandling();
@@ -101,7 +119,19 @@ class UserControllerTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_OK)
             ->assertJsonStructure([
-                'data',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'nickname',
+                        'registered_at',
+                        'email',
+                        'email_verified_at',
+                        'created_at',
+                        'updated_at',
+                        'games_won_percentage',
+                    ]
+                ],
                 'average_percentage_of_games_won',
             ]);
     }

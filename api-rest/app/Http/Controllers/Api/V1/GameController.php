@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use OpenApi\Annotations as OA;
+
 use App\Http\Controllers\Controller;
 use App\Models\Game;
 use Illuminate\Http\Request;
@@ -30,14 +32,8 @@ class GameController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="List of games and player's win percentage",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="data",
-     * type="object", @OA\Items(
-     *                 @OA\Property(property="name", type="string", example="John"),
-     *                 @OA\Property(property="games_won_percentage", type="number", format="float", example=50.0),
-     *                 @OA\Property(property="average_games_won_percentage", type="number", format="float", example=50.0)
-     *             ))
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/ListPlayerGamesWithStats")
+     *         
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -58,19 +54,13 @@ class GameController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $games = Game::where('user_id', $id)->select('dice_1', 'dice_2')->get();
-        foreach ($games as $game) {
-            $sum = $game->dice_1 + $game->dice_2;
-            $game->result = $sum === 7 ? 'won' : 'lost';
-        }
+        $gamesWithResult = $gameService->getGamesWithResult($player);
         $player_won_percentage = $gameService->getPercentageOfGamesWonByUser($player);
-
-        $data = $games;
-        $data[] = ['player_won_percentage' => $player_won_percentage];
 
         // Return games and player's win percentage
         return response()->json([
-            'data' => $data
+            'data' => $gamesWithResult,
+            'player_won_percentage' => $player_won_percentage
         ], Response::HTTP_OK);
     }
 
@@ -107,7 +97,7 @@ class GameController extends Controller
      */
 
     // Play
-    public function play(Request $request, $id)
+    public function play(Request $request, $id, GameService $gameService)
     {
         $player = User::find($id);
         if (Auth::user()->cannot('play', $player)) {
@@ -116,15 +106,14 @@ class GameController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $dice_1 = rand(1, 6);
-        $dice_2 = rand(1, 6);
+        $play = $gameService->play($player);
 
-        $this->store($id, $dice_1, $dice_2);
+        $this->store($play['player_id'], $play['dice_1'], $play['dice_2']);
 
         return response()->json([
             'data' => [
-                'dice_1' => $dice_1,
-                'dice_2' => $dice_2,
+                'dice_1' => $play['dice_1'],
+                'dice_2' => $play['dice_2']
             ]
         ]);
     }

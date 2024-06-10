@@ -18,6 +18,22 @@ class RankingControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function testGetRankingReturnsCorrectStructure()
+    {
+        //$this->withoutExceptionHandling();
+
+        $response = $this->json('GET', '/api/v1/players/ranking');
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'nickname',
+                    'games_won_percentage',
+                ]
+            ]
+        ]);
+    }
+
     // Get loser
     public function testUserCanGetLoser()
     {
@@ -27,6 +43,20 @@ class RankingControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function testGetLoserReturnsCorrectStructure()
+    {
+        //$this->withoutExceptionHandling();
+
+        $response = $this->json('GET', '/api/v1/players/ranking/loser');
+
+        $response->assertJsonStructure([
+            'data' => [
+                'nickname',
+                'games_won_percentage',
+            ]
+        ]);
+    }
+
     // Get winner
     public function testUserCanGetWinner()
     {
@@ -34,5 +64,19 @@ class RankingControllerTest extends TestCase
 
         $response = $this->json('GET', '/api/v1/players/ranking/winner');
         $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function testGetWinnerReturnsCorrectStructure()
+    {
+        //$this->withoutExceptionHandling();
+
+        $response = $this->json('GET', '/api/v1/players/ranking/winner');
+
+        $response->assertJsonStructure([
+            'data' => [
+                'nickname',
+                'games_won_percentage',
+            ]
+        ]);
     }
 }
